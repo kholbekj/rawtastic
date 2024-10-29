@@ -16,7 +16,8 @@ I would ideally like to find _some_ workaround to this, but haven't thought hard
 
 ### Simplicity
 It's simpler to author than any of the other methods.
-It is, however, more complicated than authoring html, technically speaking, as javascript doing ajaxy navigation emulation is involved.
+
+On a technical level, it's more complicated than authoring html, as javascript doing ajaxy navigation emulation is involved.
 
 It is certainly more simple than a fullblown generator, but certain usecases may not be - ie styling the resulting html, embedding things, etc.
 

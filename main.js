@@ -1,11 +1,13 @@
-function replaceContent(url) {
+function replaceContent(url, updatePath = true) {
   fetch(url)
     .then((response) => response.text())
     .then((text) => {
       main = document.querySelector('main');
       main.innerHTML = "<a href='/index.html'>Back</a><br><br>" + marked.parse(text);
       window.scrollTo(0, 0);
-      history.pushState({}, '', parametrizeUrl(new URL(url, window.location)));
+      if (updatePath) {
+        history.pushState({}, '', parametrizeUrl(new URL(url, window.location)));
+      }
       replaceLinks();
     });
 }
@@ -58,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const path = urlParams.get('path');
 
   if (path) {
-    replaceContent(path);
+    replaceContent(path, false);
   }
 
   // If the user navigates back or forward, we want to replace the content

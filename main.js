@@ -11,6 +11,7 @@ function replaceLinks() {
           .then((text) => {
             main = document.querySelector('main');
             main.innerHTML = "<a href='index.html'>Back</a><br><br>" + marked.parse(text);
+            window.scrollTo(0, 0);
             replaceLinks();
           });
       });

@@ -28,7 +28,7 @@ As the client has to generate the HTML from markdown, this does incur a computat
 
 ## Missing features
 We're in early ideation still. I plan on adding
-- Simulated navigation + permalinking
+- ~~Simulated navigation + permalinking~~
 - Some kind of fallback to no JS
 - Some baseline header/footer templating
 - Instructions on the capabilities of the markdown parser and your customization options

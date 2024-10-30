@@ -4,7 +4,7 @@ _October 28th, 2024_
 
 Since my teens I was hooked cyberpunk, in particular as imagined in Neuromancer—a culture of hackers and artists fighting the dominating class of corporations. A thriving revolutionary underworld. etc. etc.
 
-![](images/satsuki.jpg)
+![](/images/satsuki.jpg)
 _Satsuki, the Living Lore - [Ryan Pancoas](https://www.artofmtg.com/artist/ryan-pancoast)_
 
 When I got a job for a bitcoin company in 2016, it was the cyberpunk romance that fueled me. Decentralized digital money, a way for people to transact without centralized authority! It didn't take long in that industry to realize that it wasn't crypto against the dystopian corporations, it was corps, aspiring corps and just a lot of greed, all finding new ways to avoid regulation and accumulate unchecked wealth at the expense of the naive. I kept trying to find use-cases for blockchain for a while, but after NFTs went apeshit and everything was clearly just layer upon layer of ponzinomics, I found the stance that this tech isn't going anywhere good.
@@ -13,7 +13,7 @@ Cyberpunk was always meant as a warning. Like much sci-fi, it explores a potenti
 
 
 Solarpunk takes a different approach.
-![](images/theline_cow.jpeg)
+![](/images/theline_cow.jpeg)
 _[Dear Alice](https://www.youtube.com/watch?v=z-Ng5ZvrDm4)_
 
 It's a hopeful aesthetic of a sustainable future, embracing technology in a healthy way. It's so compelling and wholesome, and—as it turns—out also a movement that identifies with this vision, and the hopefulness it injects into our future outlook. This is something I ran across while perusing the [smolweb](https://www.ilyameerovich.com/gemini-the-small-internet/).

@@ -4,7 +4,7 @@ Going off of the [solarpunk](/content/solarpunk.md) my first thought was how am 
 
 ...and then I tried.
 
-![](images/math.jpg) 
+![](/images/math.jpg) 
 
 And I got overwhelmed. And I immediately fell into exactly the pattern I didn't want to - the focus on abstinence, the feeling of helplessness when confronted with the indirect cost of different kinds of services and consumption, the panic that sets in when I get the feeling that there's a tension between what I ethically want to do, and the life that I have. That's of course all important, but that's not what has rallied me, and it's not what will rally others.
 

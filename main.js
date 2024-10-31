@@ -1,42 +1,6 @@
-function replaceContent(url, updatePath = true) {
-  fetch(url)
-    .then((response) => response.text())
-    .then((text) => {
-      main = document.querySelector('main');
-      main.innerHTML = "<a href='/index.html'>Back</a><br><br>" + marked.parse(text);
-      window.scrollTo(0, 0);
-      if (updatePath) {
-        history.pushState({}, '', parametrizeUrl(new URL(url, window.location)));
-      }
-      replaceLinks();
-    });
-}
+document.addEventListener('DOMContentLoaded', init);
 
-function replaceLinks() {
-  document.querySelectorAll('a').forEach(function (link) {
-    if (link.getAttribute('href').endsWith('.md')) {
-      link.addEventListener('click', function (event) {
-        event.preventDefault();
-
-        const url = this.getAttribute('href') + '?t=' + new Date().getTime();
-
-        replaceContent(url);
-      });
-    }
-  });
-}
-
-function toggleDarkMode() {
-  const html = document.querySelector('html');
-  const currentTheme = html.getAttribute('data-theme')
-  const newTheme = currentTheme == 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', newTheme);
-  localStorage.setItem('theme', newTheme);
-  console.log('Switched from', currentTheme, 'to', newTheme);
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  replaceLinks();
+function init() {
   const darkModeElement = document.getElementById('dark-mode');
   const storedTheme = localStorage.getItem('theme');
   const browserDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -61,6 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (path) {
     replaceContent(path, false);
+  } else {
+    replaceLinks();
   }
 
   // If the user navigates back or forward, we want to replace the content
@@ -68,7 +34,42 @@ document.addEventListener('DOMContentLoaded', function () {
     window.location.reload();
   };
 
-});
+};
+function replaceLinks() {
+  document.querySelectorAll('a').forEach(function (link) {
+    if (link.getAttribute('href').endsWith('.md')) {
+      link.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        const url = this.getAttribute('href') + '?t=' + new Date().getTime();
+
+        replaceContent(url);
+      });
+    }
+  });
+}
+function replaceContent(url, updatePath = true) {
+  fetch(url)
+    .then((response) => response.text())
+    .then((text) => {
+      main = document.querySelector('main');
+
+      main.innerHTML = "<a href='/index.html'>Back</a><br><br>" + marked.parse(text);
+      window.scrollTo(0, 0);
+      if (updatePath) {
+        history.pushState({}, '', parametrizeUrl(new URL(url, window.location)));
+      }
+      replaceLinks();
+    });
+}
+function toggleDarkMode() {
+  const html = document.querySelector('html');
+  const currentTheme = html.getAttribute('data-theme')
+  const newTheme = currentTheme == 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  console.log('Switched from', currentTheme, 'to', newTheme);
+}
 
 // We want to replace the url /content/*.md with index.html?path=content/*.md
 function parametrizeUrl(url) {

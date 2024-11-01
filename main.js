@@ -55,7 +55,11 @@ function replaceContent(url, updatePath = true) {
       main = document.querySelector('main');
 
       main.innerHTML = "<a href='/index.html'>Back</a><br><br>" + marked.parse(text);
+
+      evalScripts(main);
+
       window.scrollTo(0, 0);
+
       if (updatePath) {
         history.pushState({}, '', parametrizeUrl(new URL(url, window.location)));
       }
@@ -78,4 +82,21 @@ function parametrizeUrl(url) {
     return '/index.html?path=' + path;
   }
   return url;
+}
+
+//recursively eval script tags in element
+function evalScripts(element) {
+  if (element.tagName == 'SCRIPT') {
+    // handle remote scripts
+    if (element.src) {
+      const script = document.createElement('script');
+      script.src = element.src;
+      document.head.appendChild(script);
+    } else {
+      console.log('evaluating script', element.innerHTML);
+      eval(element.innerHTML);
+    }
+  } else {
+    element.childNodes.forEach(evalScripts);
+  }
 }

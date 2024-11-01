@@ -3,5 +3,8 @@ half a pound\
 for a pound\
 wait this is germany
 
-[Awesome ASCII storytelling](https://cinni.net/comic/gemini/chapter1)
+[Jade World](https://cinni.net/comic/gemini/chapter1)
+[17776](https://www.sbnation.com/a/17776-football/chapter-1)
+[Marginalia Search](https://search.marginalia.nu/)
+
 

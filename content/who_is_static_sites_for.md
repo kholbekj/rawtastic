@@ -1,4 +1,4 @@
-# Who is static sites for?
+# Who is static sites for? (draft)
 
 In my [last post](/content/static_websites.md), I decided to try to build a flow that could get a non-technical user on a windows machine to have a static site live on the web, using [Rawstatic](/content/about_this_site.md).
 

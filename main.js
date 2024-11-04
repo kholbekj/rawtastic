@@ -39,13 +39,18 @@ function replaceLinks() {
   document.querySelectorAll('a').forEach(function (link) {
     // We look first for the data-original-url attribute, if it's not present we look for the href attribute
     // This is because the editor uses blob urls which do not have file endings
-    if (link.getAttribute('data-original-url').endsWith('.md') || link.getAttribute('href').endsWith('.md')) {
+    if (link.getAttribute('href').endsWith('.md')) {
       link.addEventListener('click', function (event) {
         event.preventDefault();
 
         // adding a timestamp helps prevent caching. This is not needed with the editor, but when using a server
-        const url = this.getAttribute('href') // + '?t=' + new Date().getTime();
-
+        //const url = this.getAttribute('href') // + '?t=' + new Date().getTime();
+        if (localStorage.getItem('siteMap') !== null) {
+          var siteMap = new Map(JSON.parse(localStorage.getItem('siteMap')));
+          var url = siteMap.get(this.getAttribute('href'));
+        } else {
+          var url = this.getAttribute('href');
+        }
         replaceContent(url);
       });
     }
@@ -61,22 +66,30 @@ function replaceContent(url, updatePath = true) {
       if (url.startsWith('blob:')) {
         // check if there's already an index url in the html tag
         const indexUrl = document.querySelector('html').getAttribute('data-index-url');
+        var content = marked.parse(text);
+        if (localStorage.getItem('siteMap') !== null) {
+          var siteMap = new Map(JSON.parse(localStorage.getItem('siteMap')));
+          var doc = new DOMParser().parseFromString(content, 'text/html');
+          replaceStaticLinks(doc, siteMap);
+          // We need the scripts from the new head to be included in the main body
+          content = doc.head.innerHTML + doc.body.innerHTML;
+        }
         if (indexUrl) {
-          main.innerHTML = "<a href='" + indexUrl + "'>Back</a><br><br>" + marked.parse(text);
+          main.innerHTML = "<a href='" + indexUrl + "'>Back</a><br><br>" + content;
         } else {
           currentUrl = window.location.href;
           document.querySelector('html').setAttribute('data-index-url', currentUrl);
-          main.innerHTML = "<a href='" + currentUrl + "'>Back</a><br><br>" + marked.parse(text);
+          main.innerHTML = "<a href='" + currentUrl + "'>Back</a><br><br>" + content;
         }
       } else {
-        main.innerHTML = "<a href='/index.html'>Back</a><br><br>" + marked.parse(text);
+        main.innerHTML = "<a href='/index.html'>Back</a><br><br>" + content;
       }
 
       evalScripts(main);
 
       window.scrollTo(0, 0);
 
-      if (updatePath) {
+      if (updatePath && !window.location.startsWith('blob:')) {
         history.pushState({}, '', parametrizeUrl(new URL(url, window.location)));
       }
       replaceLinks();
@@ -115,6 +128,19 @@ function evalScripts(element) {
   } else {
     element.childNodes.forEach(evalScripts);
   }
+}
+
+function replaceStaticLinks(doc, siteMap) {
+  doc.querySelectorAll('img[src], link[href], script[src]').forEach(function (element) {
+    // Relative links need to be replaced
+    attribute = element.src ? 'src' : 'href';
+    if (element.getAttribute(attribute).startsWith('http')) {
+      return;
+    }
+    if (siteMap.has(element.getAttribute(attribute))) {
+      element.setAttribute(attribute, siteMap.get(element.getAttribute(attribute)));
+    }
+  });
 }
 
 // Currently unused, for clickable TOC to work we'd need to use github flavored markdown header id plugin on marked

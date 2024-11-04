@@ -37,12 +37,20 @@ function init() {
 };
 function replaceLinks() {
   document.querySelectorAll('a').forEach(function (link) {
+    // We look first for the data-original-url attribute, if it's not present we look for the href attribute
+    // This is because the editor uses blob urls which do not have file endings
     if (link.getAttribute('href').endsWith('.md')) {
       link.addEventListener('click', function (event) {
         event.preventDefault();
 
-        const url = this.getAttribute('href') + '?t=' + new Date().getTime();
-
+        // adding a timestamp helps prevent caching. This is not needed with the editor, but when using a server
+        //const url = this.getAttribute('href') // + '?t=' + new Date().getTime();
+        if (window.location.href.startsWith('blob:') && localStorage.getItem('siteMap') !== null) {
+          var siteMap = new Map(JSON.parse(localStorage.getItem('siteMap')));
+          var url = siteMap.get(this.getAttribute('href'));
+        } else {
+          var url = this.getAttribute('href');
+        }
         replaceContent(url);
       });
     }
@@ -54,9 +62,34 @@ function replaceContent(url, updatePath = true) {
     .then((text) => {
       main = document.querySelector('main');
 
-      main.innerHTML = "<a href='/index.html'>Back</a><br><br>" + marked.parse(text);
+      var content = marked.parse(text);
+      // If we are currently in a blob url, we need to carry the index url to use for back link
+      if (url.startsWith('blob:')) {
+        // check if there's already an index url in the html tag
+        const indexUrl = document.querySelector('html').getAttribute('data-index-url');
+        if (localStorage.getItem('siteMap') !== null) {
+          var siteMap = new Map(JSON.parse(localStorage.getItem('siteMap')));
+          var doc = new DOMParser().parseFromString(content, 'text/html');
+          replaceStaticLinks(doc, siteMap);
+          // We need the scripts from the new head to be included in the main body
+          content = doc.head.innerHTML + doc.body.innerHTML;
+        }
+        if (indexUrl) {
+          main.innerHTML = "<a href='" + indexUrl + "'>Back</a><br><br>" + content;
+        } else {
+          currentUrl = window.location.href;
+          document.querySelector('html').setAttribute('data-index-url', currentUrl);
+          main.innerHTML = "<a href='" + currentUrl + "'>Back</a><br><br>" + content;
+        }
+      } else {
+        main.innerHTML = "<a href='/index.html'>Back</a><br><br>" + content;
+      }
+
+      evalScripts(main);
+
       window.scrollTo(0, 0);
-      if (updatePath) {
+
+      if (updatePath && !window.location.href.startsWith('blob:')) {
         history.pushState({}, '', parametrizeUrl(new URL(url, window.location)));
       }
       replaceLinks();
@@ -71,11 +104,63 @@ function toggleDarkMode() {
   console.log('Switched from', currentTheme, 'to', newTheme);
 }
 
-// We want to replace the url /content/*.md with index.html?path=content/*.md
+// Replace /xxx/*.md with /index.html?path=/xxx/*.md
 function parametrizeUrl(url) {
   const path = url.pathname;
   if (path.endsWith('.md')) {
     return '/index.html?path=' + path;
   }
   return url;
+}
+
+//recursively eval script tags in element
+function evalScripts(element) {
+  if (element.tagName == 'SCRIPT') {
+    // handle remote scripts
+    if (element.src) {
+      const script = document.createElement('script');
+      script.src = element.src;
+      document.head.appendChild(script);
+    } else {
+      console.log('evaluating script', element.innerHTML);
+      eval(element.innerHTML);
+    }
+  } else {
+    element.childNodes.forEach(evalScripts);
+  }
+}
+
+function replaceStaticLinks(doc, siteMap) {
+  doc.querySelectorAll('img[src], link[href], script[src]').forEach(function (element) {
+    // Relative links need to be replaced
+    attribute = element.src ? 'src' : 'href';
+    if (element.getAttribute(attribute).startsWith('http')) {
+      return;
+    }
+    if (siteMap.has(element.getAttribute(attribute))) {
+      element.setAttribute(attribute, siteMap.get(element.getAttribute(attribute)));
+    }
+  });
+}
+
+// Currently unused, for clickable TOC to work we'd need to use github flavored markdown header id plugin on marked
+// https://www.npmjs.com/package/marked-gfm-heading-id
+// It's also unclear where to put this in the minimalist picocss grid.
+function createToc(mdText) {
+  const stack = [document.createElement('ul')];
+  marked.lexer(mdText).filter(x => x.type === 'heading').forEach(function (heading) {
+    if (heading.depth < stack.length) {
+      stack.length = heading.depth;
+    } else {
+      while (heading.depth > stack.length) {
+        const ul = document.createElement('ul');
+        stack.at(-1).append(ul);
+        stack.push(ul);
+      }
+    }
+    const prefix = marked.getDefaults().headerPrefix || '';
+    const anchor = prefix + heading.text.replaceAll('.', '').replaceAll(' ', '-');
+    stack.at(-1).insertAdjacentHTML('beforeend', `<li><a href="#${anchor}">${heading.text}</a></li>`);
+  });
+  return stack[0].outerHTML;
 }

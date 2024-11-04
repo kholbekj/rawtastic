@@ -45,7 +45,7 @@ function replaceLinks() {
 
         // adding a timestamp helps prevent caching. This is not needed with the editor, but when using a server
         //const url = this.getAttribute('href') // + '?t=' + new Date().getTime();
-        if (localStorage.getItem('siteMap') !== null) {
+        if (window.location.href.startsWith('blob:') && localStorage.getItem('siteMap') !== null) {
           var siteMap = new Map(JSON.parse(localStorage.getItem('siteMap')));
           var url = siteMap.get(this.getAttribute('href'));
         } else {
@@ -62,11 +62,11 @@ function replaceContent(url, updatePath = true) {
     .then((text) => {
       main = document.querySelector('main');
 
+      var content = marked.parse(text);
       // If we are currently in a blob url, we need to carry the index url to use for back link
       if (url.startsWith('blob:')) {
         // check if there's already an index url in the html tag
         const indexUrl = document.querySelector('html').getAttribute('data-index-url');
-        var content = marked.parse(text);
         if (localStorage.getItem('siteMap') !== null) {
           var siteMap = new Map(JSON.parse(localStorage.getItem('siteMap')));
           var doc = new DOMParser().parseFromString(content, 'text/html');

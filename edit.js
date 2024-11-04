@@ -1,9 +1,42 @@
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
-editor.session.setMode("ace/mode/html");
-fetch('/index.html')
-  .then(response => response.text())
-  .then(data => editor.setValue(data));
+
+loadFiles();
+
+async function loadFiles() {
+  const response = await fetch("/rawtastic-main.zip");
+  const blob = await response.blob();
+  const zip = new JSZip();
+  await zip.loadAsync(blob);
+  const files = zip.files;
+  const fileNames = Object.keys(files);
+  window.files = files;
+
+  // Load index.html
+  const indexHtml = await files['rawtastic-main/index.html'].async('text');
+  editor.setValue(indexHtml);
+  editor.session.setMode("ace/mode/html");
+
+  const fileLinks = document.createElement('div');
+  fileLinks.id = 'fileLinks';
+  document.getElementById('editor').after(fileLinks);
+  for (const fileName of fileNames.filter(fileName => fileName.endsWith('.html') || fileName.endsWith('.css') || fileName.endsWith('.js') || fileName.endsWith('.md'))) {
+    const link = document.createElement('a');
+    link.href = '#';
+    link.innerText = fileName;
+    link.onclick = async () => {
+      const file = files[fileName];
+      const text = await file.async('text');
+      editor.setValue(text);
+      editor.session.setMode("ace/mode/" + fileName.split('.').pop());
+    }
+    var p = document.createElement('p');
+    p.appendChild(link);
+    fileLinks.appendChild(p);
+  }
+}
+
+
 
 document.getElementById('preview').addEventListener('click', function() {
   var html = editor.getValue();
@@ -18,6 +51,7 @@ document.getElementById('preview').addEventListener('click', function() {
 });
 
 // Traverse links, fetch resources, traverse those links, until sitemap is filled in.
+// This doesn't need to be this complex at all once we use a bounded file system.
 async function generateSiteMap(doc) {
   siteMap = new Map();
 

@@ -89,7 +89,7 @@ function replaceContent(url, updatePath = true) {
 
       window.scrollTo(0, 0);
 
-      if (updatePath && !window.location.startsWith('blob:')) {
+      if (updatePath && !window.location.href.startsWith('blob:')) {
         history.pushState({}, '', parametrizeUrl(new URL(url, window.location)));
       }
       replaceLinks();

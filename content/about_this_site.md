@@ -1,11 +1,11 @@
 # About this site
-This site was made with the minimalistic Rawstatic template. 
+This site was made with the minimalistic Eggstatic template. 
 
 Static sites generally come in two flavors:
 - Written as HTML, and served
 - Written as templates, and built by a generator (such as jekyll, hugo, gatsby)
 
-Rawstatic takes a middleway - you author content in markdown, but serve a single html file which does the parsing of markdown into html on the fly. 
+Eggstatic takes a middleway - you author content in markdown, but serve a single html file which does the parsing of markdown into html on the fly. 
 
 ## Tradeoffs
 

@@ -6,7 +6,7 @@ You go there, pick a name (2 hours gone, this feels way too permanent), and then
 
 And then I search around for templates, end up finding sites, and my momentum is demolished in a cloud of pixelated flower petals.
 
-With Rawstatic, I think I'll try a different approach. What if the site, brand new, was basically an egg - it's there, you can write your name on it with a sharpie, and then parade it to the world, jittering with anticipation of where it might go next?
+With Eggstatic, I think I'll try a different approach. What if the site, brand new, was basically an egg - it's there, you can write your name on it with a sharpie, and then parade it to the world, jittering with anticipation of where it might go next?
 
 ```
    -\   o o o   /-

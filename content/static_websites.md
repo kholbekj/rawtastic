@@ -22,7 +22,7 @@ Well, we could address some things.
 
 Clearly, using most static site generators are targeted at quite technical people. All the "easiest" recommendations requirest installing some package (be it npm, cargo, go, ruby), adjust templates in a templating language and html, apply some template maybe, author content, run commands, deploy to a host somewhere. This is really complicated if you don't use a commandline, or god forbid use Windows.
 
-Maybe I could take my very simple static site template ([Rawstatic](/content/about_this_site.md), which this site is written in), but build a dynamic site that helps you select a template, build and deploy your site, and then gives you the instructions on how to maintain it from there.
+Maybe I could take my very simple static site template ([Eggstatic](/content/about_this_site.md), which this site is written in), but build a dynamic site that helps you select a template, build and deploy your site, and then gives you the instructions on how to maintain it from there.
 
 I think a lot of people could manage that.
 

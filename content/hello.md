@@ -1,14 +1,3 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>
-var waitForHljs = setInterval(function () {
-if (typeof hljs != 'undefined') {
-hljs.highlightAll();
-clearInterval(waitForHljs);
-}
-}, 10);
-</script>
-
 # Hello! This is my new site!
 
 It comes with a bird!
@@ -65,4 +54,15 @@ Putting it together:
 And here my regular text
 [My introduction page](/content/hello.md)
 ```
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+var waitForHljs = setInterval(function () {
+if (typeof hljs != 'undefined') {
+hljs.highlightAll();
+clearInterval(waitForHljs);
+}
+}, 10);
+</script>
 

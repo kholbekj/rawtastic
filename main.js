@@ -103,7 +103,6 @@ function toggleDarkMode() {
   const newTheme = currentTheme == 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', newTheme);
   localStorage.setItem('theme', newTheme);
-  console.log('Switched from', currentTheme, 'to', newTheme);
 }
 
 // Replace /xxx/*.md with /index.html?path=/xxx/*.md
@@ -124,7 +123,6 @@ function evalScripts(element) {
       script.src = element.src;
       document.head.appendChild(script);
     } else {
-      console.log('evaluating script', element.innerHTML);
       eval(element.innerHTML);
     }
   } else {
@@ -136,16 +134,13 @@ function replaceStaticLinks(doc, siteMap) {
   doc.querySelectorAll('img[src], link[href], script[src]').forEach(function (element) {
     // Relative links need to be replaced
     attribute = element.src ? 'src' : 'href';
-    console.log('Checking', element.getAttribute(attribute));
     if (element.getAttribute(attribute).startsWith('http')) {
       return;
     }
 
     var value = element.getAttribute(attribute);
-    console.log('Replacing', value);
     value = value.startsWith('/') ? value : '/' + value;
     if (siteMap.has(value)) {
-      console.log('Replaced with', siteMap.get(value));
       element.setAttribute(attribute, siteMap.get(value));
     }
   });

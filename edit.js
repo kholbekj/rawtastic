@@ -145,3 +145,19 @@ document.getElementById('preview').addEventListener('click', function() {
 });
 
 // End of Preview Generation
+
+
+// Begining of Download Generation
+document.getElementById('download').addEventListener('click', function() {
+  const zip = new JSZip();
+  console.log(window.files);
+  for (const [fileName, content] of window.files) {
+    zip.file(fileName, content);
+  }
+  zip.generateAsync({ type: "blob" }).then(function(content) {
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(content);
+    link.download = "rawtastic-main.zip";
+    link.click();
+  });
+});

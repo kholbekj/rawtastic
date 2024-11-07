@@ -25,6 +25,15 @@ async function loadFiles() {
 
   window.files = filemap;
 
+  // If the query param q is set, we want to swap the word "cyan" in index.html with the value
+  // in the map
+  const urlParams = new URLSearchParams(window.location.search);
+  const q = urlParams.get('q');
+  if (q) {
+    const indexHtml = filemap.get('index.html');
+    const newHtml = indexHtml.replace('cyan', q);
+    filemap.set('index.html', newHtml);
+  }
 
   // Load index.html
   document.getElementById('editor').dataset.currentFile = 'index.html';

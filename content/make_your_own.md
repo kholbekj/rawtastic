@@ -35,7 +35,27 @@ Eggstatic provides everything you need customize your site and add content. We'l
 ### Hatching
 Once we wrote something on the site, we're going to go through putting it live, on the internet! You'll have several options here, none of them will cost you anything, and we'll walk through it together.
 
-Ready?
+Ready? Pick a color for your egg!
 
-<a href="/edit.html" role="button">Give me my egg!</a>
-
+<div class="grid">
+<a href="/edit.html?q=red" role="button" style="background-color: #D93526"> </a>
+<a href="/edit.html?q=pink" role="button" style="background-color: #D92662"> </a>
+<a href="/edit.html?q=fuchsia" role="button" style="background-color: #D9269D"> </a>
+<a href="/edit.html?q=purple" role="button" style="background-color: #9236A4"> </a>
+<a href="/edit.html?q=violet" role="button" style="background-color: #7540BF"> </a>
+<a href="/edit.html?q=indigo" role="button" style="background-color: #524ED2"> </a>
+<a href="/edit.html?q=blue" role="button" style="background-color: #3C71F7"> </a>
+<a href="/edit.html?q=default" role="button" style="background-color: #017FC0"> </a>
+<a href="/edit.html?q=cyan" role="button" style="background-color: #058686"> </a>
+<a href="/edit.html?q=jade" role="button" style="background-color: #00895A"> </a>
+<a href="/edit.html?q=green" role="button" style="background-color: #398712"> </a>
+<a href="/edit.html?q=lime" role="button" style="background-color: #A5D601"> </a>
+<a href="/edit.html?q=yellow" role="button" style="background-color: #F2DF0D"> </a>
+<a href="/edit.html?q=amber" role="button" style="background-color: #FFBF00"> </a>
+<a href="/edit.html?q=pumpkin" role="button" style="background-color: #FF9500"> </a>
+<a href="/edit.html?q=orange" role="button" style="background-color: #D24317"> </a>
+<a href="/edit.html?q=sand" role="button" style="background-color: #CCC6B4"> </a>
+<a href="/edit.html?q=gray" role="button" style="background-color: #ABABAB"> </a>
+<a href="/edit.html?q=zinc" role="button" style="background-color: #6F7887"> </a>
+<a href="/edit.html?q=slate" role="button" style="background-color: #525F7A"> </a>
+</div>

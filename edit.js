@@ -13,7 +13,7 @@ async function loadFiles() {
   window.files = files;
 
   // Load index.html
-  const indexHtml = await files['rawtastic-main/index.html'].async('text');
+  const indexHtml = await files['index.html'].async('text');
   editor.setValue(indexHtml);
   editor.session.setMode("ace/mode/html");
 
@@ -34,18 +34,16 @@ async function loadFiles() {
     p.appendChild(link);
     fileLinks.appendChild(p);
   }
+
+  return files;
 }
 
 
 
 document.getElementById('preview').addEventListener('click', function() {
-  var html = editor.getValue();
-  doc = new DOMParser().parseFromString(html, 'text/html');
-  window.doc = doc;
-  generateSiteMap(doc).then(() => {
+  generateSiteMapFromList(window.files).then(() => {
     localStorage.setItem('siteMap', JSON.stringify(Array.from(siteMap.entries())));
-    var blob = new Blob([doc.documentElement.outerHTML], { type: "text/html" });
-    var url = URL.createObjectURL(blob);
+    var url = siteMap.get('/index.html');
     window.open(url, '_blank').focus();
   });
 });
@@ -92,6 +90,39 @@ async function generateSiteMap(doc) {
   siteMap.set('index.html', URL.createObjectURL(new Blob([doc.documentElement.outerHTML], { type: "text/html" })));
 }
 
+async function generateSiteMapFromList(files) {
+  siteMap = new Map();
+
+  fileNames = Object.keys(files);
+  nonDirs = fileNames.filter(fileName => !fileName.endsWith('/'));
+
+  // Ignore html for now
+  for (var fileName of nonDirs.filter(name => !name.endsWith('.html'))) {
+    type = fileName.split('.').pop();
+    address = `/${fileName}`;
+
+    if (type === 'css' || type === 'js') {
+      siteMap.set(address, URL.createObjectURL(new Blob([await files[fileName].async('text')], { type: "text/" + type })));
+    } else if (type === 'md') {
+      siteMap.set(address, URL.createObjectURL(new Blob([await files[fileName].async('text')], { type: "text/markdown" })));
+    } else if (type === 'png' || type === 'jpg' || type === 'jpeg' || type === 'gif') {
+      siteMap.set(address, URL.createObjectURL(new Blob([await files[fileName].async('blob')], { type: "image/" + type })));
+    } else {
+      console.error('Unknown file type: ' + type);
+    }
+  }
+
+  // Then do html, but replacing static links
+  for (var fileName of nonDirs.filter(name => name.endsWith('.html'))) {
+    const html = await files[fileName].async('text');
+    doc = new DOMParser().parseFromString(html, 'text/html');
+    replaceStaticLinks(doc, siteMap);
+    siteMap.set(`/${fileName}`, URL.createObjectURL(new Blob([doc.documentElement.outerHTML], { type: "text/html" })));
+  }
+
+  return siteMap;
+}
+
 // Only get relative links
 function getLinks(doc) {
   const elements = doc.querySelectorAll('img[src], script[src], link[href], a[href]');
@@ -110,8 +141,9 @@ function replaceStaticLinks(doc, siteMap) {
   const elements = doc.querySelectorAll('link[href], script[src]', 'img[src]');
   for (const element of elements) {
     const attr = element.href ? 'href' : 'src';
-    const url = element.getAttribute(attr);
+    var url = element.getAttribute(attr);
     if (url && !url.startsWith('http')) {
+      url = url.startsWith('/') ? url : '/' + url;
       const newUrl = siteMap.get(url);
       if (newUrl) {
         element.setAttribute(attr, newUrl);

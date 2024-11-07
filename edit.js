@@ -91,7 +91,7 @@ document.getElementById('save').addEventListener('click', function() {
 async function generateSiteMapFromList(files) {
   siteMap = new Map();
 
-  fileNames = files.keys().toArray();;
+  fileNames = [...files.keys()];
   nonDirs = fileNames.filter(fileName => !fileName.endsWith('/'));
 
   // Ignore html for now

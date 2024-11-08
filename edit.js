@@ -111,11 +111,10 @@ async function loadFiles() {
       p.appendChild(link);
       // Prepend to button
       fileLinks.insertBefore(p, newFileButton);
+      link.click();
     }
   }
-  li = document.createElement('li');
-  li.appendChild(newFileButton);
-  fileLinks.appendChild(li);
+  fileLinks.appendChild(newFileButton);
 
   return files;
 }

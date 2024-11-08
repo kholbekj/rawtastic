@@ -8,8 +8,20 @@ loadFiles();
 
 // Load the zip file, open index.html in the editor
 async function loadFiles() {
-  const response = await fetch("/rawtastic-main.zip");
-  const blob = await response.blob();
+  var blob;
+  if (localStorage.getItem("rawtastic-main") !== null) {
+    if (confirm("A previous session was found. Do you want to load it?")) {
+      const base64 = localStorage.getItem("rawtastic-main");
+      const response = await fetch(base64);
+      blob = await response.blob();
+    } else {
+      const response = await fetch("/rawtastic-main.zip");
+      blob = await response.blob();
+    }
+  } else {
+    const response = await fetch("/rawtastic-main.zip");
+    blob = await response.blob();
+  }
   const zip = new JSZip();
   await zip.loadAsync(blob);
   const files = zip.files;
@@ -71,6 +83,40 @@ async function loadFiles() {
     fileLinks.appendChild(p);
   }
 
+  // Add a 'new file' button
+  const newFileButton = document.createElement('button');
+  newFileButton.innerText = 'New File';
+  newFileButton.onclick = () => {
+    const fileName = prompt('Enter the name of the new file');
+    if (fileName) {
+      window.files.set(fileName, '');
+      const link = document.createElement('a');
+      link.href = '#';
+      link.innerText = fileName;
+      const languageModes = {
+        'html': 'html',
+        'css': 'css',
+        'js': 'javascript',
+        'md': 'markdown'
+      };
+      const languageMode = languageModes[fileName.split('.').pop()];
+
+      link.onclick = async () => {
+        const text = window.files.get(fileName);
+        editor.setValue(text);
+        editor.session.setMode("ace/mode/" + languageMode);
+        document.getElementById('editor').dataset.currentFile = fileName;
+      }
+      var p = document.createElement('li');
+      p.appendChild(link);
+      // Prepend to button
+      fileLinks.insertBefore(p, newFileButton);
+    }
+  }
+  li = document.createElement('li');
+  li.appendChild(newFileButton);
+  fileLinks.appendChild(li);
+
   return files;
 }
 
@@ -80,8 +126,23 @@ document.getElementById('save').addEventListener('click', function() {
   console.log(fileName);
   content = editor.getValue();
   window.files.set(fileName, content);
+  storeInLocalStorage(window.files);
 });
 
+// Zip and the files, then store them in local storage
+function storeInLocalStorage(files) {
+  const zip = new JSZip();
+  for (const [fileName, content] of files) {
+    zip.file(fileName, content);
+  }
+  zip.generateAsync({ type: "blob" }).then(function(content) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      localStorage.setItem('rawtastic-main', reader.result);
+    }
+    reader.readAsDataURL(content);
+  });
+}
 
 // End of Editor
 
@@ -150,7 +211,6 @@ document.getElementById('preview').addEventListener('click', function() {
 // Begining of Download Generation
 document.getElementById('download').addEventListener('click', function() {
   const zip = new JSZip();
-  console.log(window.files);
   for (const [fileName, content] of window.files) {
     zip.file(fileName, content);
   }
